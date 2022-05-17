@@ -1,0 +1,146 @@
+{
+  "groups": [
+    {
+      "name": "lvyx.community",
+      "type": "com.lvyx.commons.config.CommunityProperties",
+      "sourceType": "com.lvyx.commons.config.CommunityProperties"
+    },
+    {
+      "name": "lvyx.enc-denc",
+      "type": "com.lvyx.commons.config.EncryptDencryptProperties",
+      "sourceType": "com.lvyx.commons.config.EncryptDencryptProperties"
+    },
+    {
+      "name": "lvyx.redis",
+      "type": "com.lvyx.commons.config.SysRedisProperties",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties"
+    },
+    {
+      "name": "lvyx.system",
+      "type": "com.lvyx.commons.config.SystemProperties",
+      "sourceType": "com.lvyx.commons.config.SystemProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "lvyx.community.abnormal-body-temperature",
+      "type": "java.lang.String",
+      "description": "异常体温",
+      "sourceType": "com.lvyx.commons.config.CommunityProperties",
+      "defaultValue": "37.5"
+    },
+    {
+      "name": "lvyx.community.consecutive-days",
+      "type": "java.lang.Integer",
+      "description": "连续健康天数节点(超过此节点，则认为是健康)",
+      "sourceType": "com.lvyx.commons.config.CommunityProperties",
+      "defaultValue": 7
+    },
+    {
+      "name": "lvyx.enc-denc.enc-and-denc",
+      "type": "java.lang.Boolean",
+      "description": "开启加密解密 @since 2021\/12\/23 18:58",
+      "sourceType": "com.lvyx.commons.config.EncryptDencryptProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "lvyx.enc-denc.encrypt-type",
+      "type": "java.lang.String",
+      "description": "加密解密方式 @since 2021\/12\/23 18:58",
+      "sourceType": "com.lvyx.commons.config.EncryptDencryptProperties",
+      "defaultValue": "RSA"
+    },
+    {
+      "name": "lvyx.redis.connect-pool-size",
+      "type": "java.lang.Integer",
+      "description": "连接池大小 @since 2021\/12\/30 15:59",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties",
+      "defaultValue": 150
+    },
+    {
+      "name": "lvyx.redis.connect-timeout",
+      "type": "java.lang.Integer",
+      "description": "获取连接超时时间 @since 2021\/12\/30 15:59",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties",
+      "defaultValue": 6000
+    },
+    {
+      "name": "lvyx.redis.connection-minimumidle-size",
+      "type": "java.lang.Integer",
+      "description": "初始化连接数 @since 2021\/12\/30 15:59",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties",
+      "defaultValue": 30
+    },
+    {
+      "name": "lvyx.redis.global-session-timeout",
+      "type": "java.lang.Long",
+      "description": "全局超时时间  @since 2021\/12\/30 15:59",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties",
+      "defaultValue": 360000
+    },
+    {
+      "name": "lvyx.redis.nodes",
+      "type": "java.lang.String",
+      "description": "redis连接地址，（集群环境多个redis连接使用逗号分割） @since 2021\/12\/30 15:59",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties",
+      "defaultValue": "redis:\/\/127.0.0.1:6379"
+    },
+    {
+      "name": "lvyx.redis.timeout",
+      "type": "java.lang.Integer",
+      "description": "等待数据返回超时时间 @since 2021\/12\/30 15:59",
+      "sourceType": "com.lvyx.commons.config.SysRedisProperties",
+      "defaultValue": 6000
+    },
+    {
+      "name": "lvyx.system.active",
+      "type": "java.lang.String",
+      "description": "系统开发环境",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "test"
+    },
+    {
+      "name": "lvyx.system.file-path",
+      "type": "java.lang.String",
+      "description": "文件服务器地址",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "D:\/CommunitySystem"
+    },
+    {
+      "name": "lvyx.system.logo-path",
+      "type": "java.lang.String",
+      "description": "社区logo路径",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "D:\/CommunitySystem\/STATIC\/logo\/logo.png"
+    },
+    {
+      "name": "lvyx.system.static-path",
+      "type": "java.lang.String",
+      "description": "静态资源根目录",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "STATIC"
+    },
+    {
+      "name": "lvyx.system.system-password",
+      "type": "java.lang.String",
+      "description": "系统重置默认密码",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "Lv@12345"
+    },
+    {
+      "name": "lvyx.system.test-captcha-code",
+      "type": "java.lang.String",
+      "description": "系统测试环境验证码",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "0715"
+    },
+    {
+      "name": "lvyx.system.upload-module",
+      "type": "java.lang.String",
+      "description": "上传文件跟目录",
+      "sourceType": "com.lvyx.commons.config.SystemProperties",
+      "defaultValue": "UPLOAD"
+    }
+  ],
+  "hints": []
+}

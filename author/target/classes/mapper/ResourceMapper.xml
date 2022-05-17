@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.author.mapper.ResourceMapper">
+
+    <sql id="resourceCloum">
+        r.id, r.role_name, r.label, r.description, r.sort_no, r.is_enable, r.create_user, r.create_time, r.update_user, r.update_time, r.is_delete, r.delete_user, r.delete_time
+    </sql>
+
+    <select id="getResourcesByUserId" resultType="com.lvyx.author.entity.Resource">
+        SELECT <include refid="resourceCloum"/>
+        FROM l_user u
+        INNER JOIN l_user_role ur ON u.ID = ur.USER_ID
+        INNER JOIN l_role r ON ur.ROLE_ID = r.ID
+        INNER JOIN l_role_resource rr ON r.ID = rr.ROLE_ID
+        INNER JOIN l_resource re ON rr.RESOURCE_ID = re.ID
+        WHERE u.ID = #{userId}
+        AND u.IS_ENABLE = 1
+        AND u.IS_DELETE = 0
+        AND ur.IS_ENABLE = 1
+        AND ur.IS_DELETE = 0
+        AND r.IS_ENABLE = 1
+        AND r.IS_DELETE = 0
+        AND rr.IS_ENABLE = 1
+        AND rr.IS_DELETE = 0
+        AND re.IS_ENABLE = 1
+        AND re.IS_DELETE = 0
+    </select>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.community.mapper.CommunityExceptionMapper">
+
+    <select id="findList" parameterType="com.lvyx.community.bo.QueryExceptionBo"
+            resultType="com.lvyx.community.vo.ExceptionVo">
+        select u.ID as userId,
+        u.REAL_NAME as userName,
+        u.MOBIL as userMobile,
+        u.AVATAR as userAvatar,
+        e.id,
+        e.EXCEPTION_TYPE,
+        e.EXCEPTION_DESCRIPTION,
+        e.IS_DEAL_WITH,
+        e.RESULT,
+        e.CREATE_TIME,
+        e.UPDATE_TIME,
+        u2.REAL_NAME as updateUserName,
+        u2.MOBIL as updateUserMobile
+        from l_community_exception e
+        inner join l_user u on e.CREATE_USER = u.id
+        left join l_user u2 on e.UPDATE_USER = u2.id
+        where e.IS_DELETE = 0
+        and e.IS_ENABLE = 1
+        <if test="userName != null and userName != ''">
+            <bind name="userNameLike" value="'%' + userName + '%'"/>
+            and u.REAL_NAME like #{userNameLike}
+        </if>
+        <if test="status != null and status != '' or status == 0 ">
+            and e.IS_DEAL_WITH = #{status}
+        </if>
+        <if test="exceptionType != null and exceptionType != '' or exceptionType == 0 ">
+            and e.EXCEPTION_TYPE = #{exceptionType}
+        </if>
+        <if test="periodIds != null">
+            and ( u.period_id in
+            <foreach collection="periodIds" close=")" separator="," open="(" item="periodId">
+                #{periodId}
+            </foreach>
+            or u.period_id is null )
+        </if>
+        <if test="status == '' or status == 0 ">
+            order by e.create_time desc
+        </if>
+        <if test="status != null and status != '' and status != 0  ">
+            order by e.update_time desc
+        </if>
+
+    </select>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.author.mapper.RoleMapper">
+
+    <sql id="roleColumn">
+        R.ID, R.ROLE_NAME, R.LABEL, R.DESCRIPTION, R.SORT_NO, R.IS_ENABLE, R.CREATE_USER, R.CREATE_TIME, R.UPDATE_USER, R.UPDATE_TIME, R.IS_DELETE, R.DELETE_USER, R.DELETE_TIME
+    </sql>
+
+    <resultMap id="findCommunityRoleMap" type="com.lvyx.author.vo.CommunityRoleVo">
+        <id property="roleId" column="roleId"/>
+        <result property="roleName" column="roleName"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <select id="getRoleIdsByUser" resultType="com.lvyx.author.entity.Role">
+        SELECT
+        <include refid="roleColumn"/>
+        FROM l_user U
+        INNER JOIN l_user_role UR ON U.ID = UR.USER_ID
+        INNER JOIN l_role R ON UR.ROLE_ID = R.ID
+        WHERE UR.IS_ENABLE = 1
+        AND UR.IS_DELETE = 0
+        AND U.IS_ENABLE = 1
+        AND U.IS_DELETE = 0
+        AND R.IS_ENABLE = 1
+        AND R.IS_DELETE = 0
+        <if test="user.id != null and user.id != '' ">
+            AND U.ID = #{user.id}
+        </if>
+    </select>
+
+    <select id="findUserResource" resultType="com.lvyx.author.entity.Resource">
+        select lre.*
+        from l_user_role lur
+        left join l_role lr on lur.ROLE_ID = lr.ID
+        left join l_role_resource lrr on lr.ID = lrr.ROLE_ID
+        left join l_resource lre on lrr.RESOURCE_ID = lre.ID
+        where lur.USER_ID = #{userId}
+        and lre.RESOURCE_TYPE = #{resourceType}
+        and lur.is_enable = 1
+        and lur.is_delete = 0
+        and lr.is_enable = 1
+        and lr.is_delete = 0
+        and lrr.is_enable = 1
+        and lrr.is_delete = 0
+        and lre.is_enable = 1
+        and lre.is_delete = 0
+        order by lre.sort_no
+    </select>
+
+    <select id="findCommunityRole" resultMap="findCommunityRoleMap">
+        select lr.ID as roleId,
+               lr.ROLE_NAME as roleName,
+               lr.DESCRIPTION
+        from l_role lr
+        where lr.is_enable = 1
+        and lr.is_delete = 0
+        <if test="label != null and label != '' ">
+            and lr.label = #{label}
+        </if>
+        <if test="name != null and name != '' ">
+            <bind name="searchName" value="'%' + name + '%'"/>
+            and lr.role_name like #{searchName}
+        </if>
+        order by lr.create_time desc
+    </select>
+</mapper>

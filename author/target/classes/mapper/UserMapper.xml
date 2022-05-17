@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.author.mapper.UserMapper">
+
+    <sql id="userColumn">
+        ID, LOGIN_NAME, REAL_NAME, NICK_NAME, PASSWORD, SEX, ZIPCODE, ADDRESS, TEL, MOBIL, EMAIL, DUTIES, SORT_NO, IS_ENABLE, CREATE_USER, CREATE_TIME, UPDATE_USER, UPDATE_TIME, IS_DELETE, DELETE_USER, DELETE_TIME
+    </sql>
+
+    <resultMap id="findUserHoseholdByQueryMap" type="com.lvyx.community.vo.UserHouseholdVo">
+        <result property="userId" column="userId"/>
+        <result property="householdId" column="householdId"/>
+        <result property="householdNumber" column="householdName"/>
+        <result property="layerId" column="layerId"/>
+        <result property="layerNumber" column="layerName"/>
+        <result property="unitId" column="unitId"/>
+        <result property="unitNumber" column="unitName"/>
+        <result property="buildingId" column="buildingId"/>
+        <result property="buildingNumber" column="buildingName"/>
+        <result property="periodId" column="periodId"/>
+        <result property="periodNumber" column="periodName"/>
+        <association property="user"  javaType="com.lvyx.commons.pojo.ShiroUser">
+            <result property="id" column="userId"/>
+            <result property="realName" column="userRealName"/>
+            <result property="loginName" column="userLoginName"/>
+            <result property="mobil" column="userMobil"/>
+            <result property="tel" column="userTel"/>
+            <result property="email" column="userEmail"/>
+            <result property="avatar" column="userAvatar"/>
+        </association>
+    </resultMap>
+
+    <select id="listByUser" resultType="com.lvyx.author.entity.User">
+        SELECT
+        <include refid="userColumn"/>
+        FROM l_user
+        WHERE l_user.IS_DELETE = 0
+        <if test="user.id != null and user.id != '' ">
+            AND ID = #{user.id}
+        </if>
+        <if test="user.loginName != null and user.loginName != '' ">
+            AND LOGIN_NAME = #{user.loginName}
+        </if>
+    </select>
+
+    <select id="findUserList" parameterType="com.lvyx.author.bo.QueryUserListBo"
+            resultMap="findUserHoseholdByQueryMap">
+        select lu.id as userId,
+        lu.REAL_NAME as userRealName,
+        lu.LOGIN_NAME as userLoginName,
+        lu.TEL as userTel,
+        lu.AVATAR as userAvatar,
+        lu.MOBIL as userMobil,
+        lu.EMAIL as userEmail,
+        lch.id as householdId,
+        lch.HOUSEHOLD_NUMBER as householdName,
+        lcl.id as layerId,
+        lcl.LAYER_NUMBER as layerName,
+        lcu.id as unitId,
+        lcu.UNIT_NUMBER as unitName,
+        lcb.id as buildingId,
+        lcb.BUILDING_NUMBER as buildingName,
+        lcp.id as periodId,
+        lcp.PERIOD_NUMBER as periodName
+        from l_user lu
+        left join l_community_household_user lchu on lu.ID = lchu.USER_ID
+        left join l_community_household lch on lchu.HOUSEHOLD_ID = lch.ID
+        left join l_community_layer lcl on lch.LAYER_ID = lcl.ID
+        left join l_community_unit lcu on lcl.UNIT_ID = lcu.ID
+        left join l_community_building lcb on lcu.BUILDING_ID = lcb.ID
+        left join l_community_period lcp on lcb.PERIOD_ID = lcp.ID
+        where lu.IS_DELETE = 0
+        <if test="userId != null and userId != '' ">
+            AND lu.ID = #{userId}
+        </if>
+        <if test="searchName != null and searchName != '' ">
+            <bind name="search" value="'%' + searchName + '%'"/>
+            and ( lu.REAL_NAME like #{search}
+                or lu.NICK_NAME like #{search}
+                or lu.LOGIN_NAME like #{search}
+                or lu.MOBIL like #{search}
+            )
+        </if>
+        <if test="isEnableUser != null and isEnableUser != '' or isEnableUser == 0 ">
+            AND lu.IS_ENABLE = #{isEnableUser}
+        </if>
+        <if test="status == 1 or status == 2 or status ==3">
+            and lchu.id is null
+        </if>
+        <if test="isEnableHouseHold != null and isEnableHouseHold != '' or isEnableHouseHold == 0 ">
+            AND lchu.IS_ENABLE = #{isEnableHouseHold}
+            AND lchu.IS_DELETE = 0
+        </if>
+        <if test="periodIds != null and status == 0  ">
+            AND lcp.ID in
+            <foreach collection="periodIds" close=")" separator="," open="(" item="periodId">
+                #{periodId}
+            </foreach>
+        </if>
+    </select>
+</mapper>

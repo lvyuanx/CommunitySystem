@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.community.mapper.CommunityPeriodMapper">
+
+    <resultMap id="communityInfo" type="com.lvyx.community.vo.PeriodVo">
+        <id column="PERIOD_ID" property="id" />
+        <result column="PERIOD_NUMBER" property="periodNumber"/>
+        <result column="P_NO" property="sortNo"/>
+        <collection property="buildingVoList"  ofType="com.lvyx.community.vo.BuildingVo">
+            <id column="BUILDING_ID" property="id" />
+            <result column="BUILDING_NUMBER" property="buildingNumber"/>
+            <result column="PERIOD_ID" property="periodId"/>
+            <result column="B_NO" property="sortNo"/>
+            <collection property="unitVoList" ofType="com.lvyx.community.vo.UnitVo">
+                <id column="UNIT_ID" property="id" />
+                <result column="UNIT_NUMBER" property="unitNumber"/>
+                <result column="BUILDING_ID" property="buildingId"/>
+                <result column="U_NO" property="sortNo"/>
+                <collection property="layerVoList" ofType="com.lvyx.community.vo.LayerVo">
+                    <id column="LAYER_ID" property="id" />
+                    <result column="LAYER_NUMBER" property="layerNumber"/>
+                    <result column="UNIT_ID" property="unitId"/>
+                    <result column="L_NO" property="sortNo"/>
+                    <collection property="householdVoList" ofType="com.lvyx.community.vo.HouseholdVo">
+                        <id column="HOUSEHOLD_ID" property="id" />
+                        <result column="HOUSEHOLE_NUMBER" property="householdNumber"/>
+                        <result column="LAYER_ID" property="layerId"/>
+                        <result column="H_NO" property="sortNo"/>
+                        <collection property="householdUserVoList" ofType="com.lvyx.community.vo.HouseholdUserVo">
+                            <id column="HOUSEHOLD_USER_ID" property="id" />
+                            <result column="HOUSEHOLD_ID" property="householdId"/>
+                            <result column="USER_ID" property="userId"/>
+                            <result column="USER_NO" property="sortNo"/>
+                        </collection>
+                    </collection>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="cascadeVoMap" type="com.lvyx.community.vo.CascadeVo">
+        <id column="PERIOD_ID" property="value" />
+        <result column="PERIOD_NUMBER" property="text"/>
+        <result column="P_NO" property="sortNo"/>
+        <collection property="children"  ofType="com.lvyx.community.vo.CascadeVo">
+            <id column="BUILDING_ID" property="value" />
+            <result column="BUILDING_NUMBER" property="text"/>
+            <result column="B_NO" property="sortNo"/>
+            <collection property="children" ofType="com.lvyx.community.vo.CascadeVo">
+                <id column="UNIT_ID" property="value" />
+                <result column="UNIT_NUMBER" property="text"/>
+                <result column="U_NO" property="sortNo"/>
+                <collection property="children" ofType="com.lvyx.community.vo.CascadeVo">
+                    <id column="LAYER_ID" property="value" />
+                    <result column="LAYER_NUMBER" property="text"/>
+                    <result column="L_NO" property="sortNo"/>
+                    <collection property="children" ofType="com.lvyx.community.vo.CascadeVo">
+                        <id column="HOSEHOLD_ID" property="value" />
+                        <result column="HOUSEHOLD_NUMBER" property="text"/>
+                        <result column="H_NO" property="sortNo"/>
+                    </collection>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="comprehensiveMap" type="com.lvyx.community.vo.ComprehensiveVo">
+        <id column="Building_ID" property="buildingId" />
+        <result column="BUILDING_NUMBER" property="buildingNumber"/>
+        <result column="B_NO" property="sortNo"/>
+        <collection property="unitVoList" ofType="com.lvyx.community.vo.UnitVo">
+            <id column="UNIT_ID" property="id" />
+            <result column="UNIT_NUMBER" property="unitNumber"/>
+            <result column="BUILDING_ID" property="buildingId"/>
+            <result column="U_NO" property="sortNo"/>
+            <collection property="layerVoList" ofType="com.lvyx.community.vo.LayerVo">
+                <id column="LAYER_ID" property="id" />
+                <result column="LAYER_NUMBER" property="layerNumber"/>
+                <result column="UNIT_ID" property="unitId"/>
+                <result column="L_NO" property="sortNo"/>
+                <collection property="householdVoList" ofType="com.lvyx.community.vo.HouseholdVo">
+                    <id column="HOUSEHOLD_ID" property="id" />
+                    <result column="HOUSEHOLE_NUMBER" property="householdNumber"/>
+                    <result column="LAYER_ID" property="layerId"/>
+                    <result column="H_NO" property="sortNo"/>
+                    <collection property="householdUserVoList" ofType="com.lvyx.community.vo.HouseholdUserVo">
+                        <id column="HOUSEHOLD_USER_ID" property="id" />
+                        <result column="HOUSEHOLD_ID" property="householdId"/>
+                        <result column="USER_ID" property="userId"/>
+                        <result column="USER_NO" property="sortNo"/>
+                    </collection>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findCommunityByPeriodId" resultMap="communityInfo">
+        SELECT LCP.ID AS PERIOD_ID,
+               LCP.PERIOD_NUMBER,
+               LCP.SORT_NO AS P_NO,
+               LCB.ID AS BUILDING_ID,
+               LCB.BUILDING_NUMBER,
+               LCB.SORT_NO AS B_NO,
+               LCU.ID AS UNIT_ID,
+               LCU.UNIT_NUMBER,
+               LCU.SORT_NO AS U_NO,
+               LCL.ID AS LAYER_ID,
+               LCL.LAYER_NUMBER,
+               LCL.SORT_NO AS L_NO,
+               LCH.ID AS HOSEHOLD_ID,
+               LCH.HOUSEHOLD_NUMBER,
+               LCH.SORT_NO AS H_NO,
+               LCHU.USER_ID,
+               LCHU.ID AS HOUSEHOLD_USER_ID,
+               LCHU.SORT_NO AS USER_NO
+        FROM l_community_period LCP
+                 LEFT JOIN l_community_building LCB ON LCP.ID = LCB.PERIOD_ID
+                 LEFT JOIN l_community_unit LCU ON LCB.ID = LCU.BUILDING_ID
+                 LEFT JOIN l_community_layer LCL ON LCU.ID = LCL.UNIT_ID
+                 LEFT JOIN l_community_household LCH ON LCL.ID = LCH.LAYER_ID
+                 LEFT JOIN l_community_household_user LCHU ON LCH.ID = LCHU.HOUSEHOLD_ID
+        WHERE
+            (
+                    (LCP.IS_ENABLE = 1 OR LCP.IS_ENABLE IS NULL )AND (LCP.IS_DELETE = 0 OR LCP.IS_DELETE IS NULL)
+                    AND (LCB.IS_ENABLE = 1 OR LCB.IS_ENABLE IS NULL )AND (LCB.IS_DELETE = 0 OR LCB.IS_DELETE IS NULL )
+                    AND (LCU.IS_ENABLE = 1 OR LCU.IS_ENABLE IS NULL )AND (LCU.IS_DELETE = 0 OR LCU.IS_DELETE IS NULL )
+                    AND (LCL.IS_ENABLE = 1 OR LCL.IS_ENABLE IS NULL )AND (LCL.IS_DELETE = 0 OR LCL.IS_DELETE IS NULL )
+                    AND (LCH.IS_ENABLE = 1 OR LCH.IS_ENABLE IS NULL )AND (LCH.IS_DELETE = 0 OR LCH.IS_DELETE IS NULL )
+                    AND (LCHU.IS_ENABLE = 1 OR LCHU.IS_ENABLE IS NULL ) AND( LCHU.IS_DELETE = 0 OR LCHU.IS_DELETE IS NULL )
+                )
+          AND LCP.ID = #{id}
+    </select>
+
+
+    <select id="findComprehensiveByPeriodId" resultMap="comprehensiveMap">
+        SELECT LCP.ID AS PERIOD_ID,
+               LCP.PERIOD_NUMBER,
+               LCP.SORT_NO AS P_NO,
+               LCB.ID AS BUILDING_ID,
+               LCB.BUILDING_NUMBER,
+               LCB.SORT_NO AS B_NO,
+               LCU.ID AS UNIT_ID,
+               LCU.UNIT_NUMBER,
+               LCU.SORT_NO AS U_NO,
+               LCL.ID AS LAYER_ID,
+               LCL.LAYER_NUMBER,
+               LCL.SORT_NO AS L_NO,
+               LCH.ID AS HOSEHOLD_ID,
+               LCH.HOUSEHOLD_NUMBER,
+               LCH.SORT_NO AS H_NO,
+               LCHU.USER_ID,
+               LCHU.ID AS HOUSEHOLD_USER_ID,
+               LCHU.SORT_NO AS USER_NO
+        FROM l_community_period LCP
+                 LEFT JOIN l_community_building LCB ON LCP.ID = LCB.PERIOD_ID
+                 LEFT JOIN l_community_unit LCU ON LCB.ID = LCU.BUILDING_ID
+                 LEFT JOIN l_community_layer LCL ON LCU.ID = LCL.UNIT_ID
+                 LEFT JOIN l_community_household LCH ON LCL.ID = LCH.LAYER_ID
+                 LEFT JOIN l_community_household_user LCHU ON LCH.ID = LCHU.HOUSEHOLD_ID
+        WHERE
+            (
+                    (LCP.IS_ENABLE = 1 OR LCP.IS_ENABLE IS NULL )AND (LCP.IS_DELETE = 0 OR LCP.IS_DELETE IS NULL)
+                    AND (LCB.IS_ENABLE = 1  )AND (LCB.IS_DELETE = 0  )
+                    AND (LCU.IS_ENABLE = 1 OR LCU.IS_ENABLE IS NULL )AND (LCU.IS_DELETE = 0 OR LCU.IS_DELETE IS NULL )
+                    AND (LCL.IS_ENABLE = 1 OR LCL.IS_ENABLE IS NULL )AND (LCL.IS_DELETE = 0 OR LCL.IS_DELETE IS NULL )
+                    AND (LCH.IS_ENABLE = 1 OR LCH.IS_ENABLE IS NULL )AND (LCH.IS_DELETE = 0 OR LCH.IS_DELETE IS NULL )
+                    AND (LCHU.IS_ENABLE = 1 OR LCHU.IS_ENABLE IS NULL ) AND( LCHU.IS_DELETE = 0 OR LCHU.IS_DELETE IS NULL )
+                )
+          AND LCP.ID = #{id}
+        GROUP BY LCB.ID, LCB.SORT_NO
+        ORDER by LCB.SORT_NO
+    </select>
+    <select id="findCommunityAllInfo" resultMap="cascadeVoMap">
+        SELECT LCP.ID AS PERIOD_ID,
+               LCP.PERIOD_NUMBER,
+               LCP.SORT_NO AS P_NO,
+               LCB.ID AS BUILDING_ID,
+               LCB.BUILDING_NUMBER,
+               LCB.SORT_NO AS B_NO,
+               LCU.ID AS UNIT_ID,
+               LCU.UNIT_NUMBER,
+               LCU.SORT_NO AS U_NO,
+               LCL.ID AS LAYER_ID,
+               LCL.LAYER_NUMBER,
+               LCL.SORT_NO AS L_NO,
+               LCH.ID AS HOSEHOLD_ID,
+               LCH.HOUSEHOLD_NUMBER,
+               LCH.SORT_NO AS H_NO
+        FROM l_community_period LCP
+                 LEFT JOIN l_community_building LCB ON LCP.ID = LCB.PERIOD_ID
+                 LEFT JOIN l_community_unit LCU ON LCB.ID = LCU.BUILDING_ID
+                 LEFT JOIN l_community_layer LCL ON LCU.ID = LCL.UNIT_ID
+                 LEFT JOIN l_community_household LCH ON LCL.ID = LCH.LAYER_ID
+        WHERE
+            (
+                    (LCP.IS_ENABLE = 1 OR LCP.IS_ENABLE IS NULL )AND (LCP.IS_DELETE = 0 OR LCP.IS_DELETE IS NULL)
+                    AND (LCB.IS_ENABLE = 1 OR LCB.IS_ENABLE IS NULL )AND (LCB.IS_DELETE = 0 OR LCB.IS_DELETE IS NULL )
+                    AND (LCU.IS_ENABLE = 1 OR LCU.IS_ENABLE IS NULL )AND (LCU.IS_DELETE = 0 OR LCU.IS_DELETE IS NULL )
+                    AND (LCL.IS_ENABLE = 1 OR LCL.IS_ENABLE IS NULL )AND (LCL.IS_DELETE = 0 OR LCL.IS_DELETE IS NULL )
+                    AND (LCH.IS_ENABLE = 1 OR LCH.IS_ENABLE IS NULL )AND (LCH.IS_DELETE = 0 OR LCH.IS_DELETE IS NULL )
+                )
+    </select>
+    <select id="findInfoByUser" resultType="com.lvyx.community.vo.AddressVo">
+        SELECT LCP.ID AS PERIOD_ID,
+               LCP.PERIOD_NUMBER,
+               LCP.SORT_NO AS P_NO,
+               LCB.ID AS BUILDING_ID,
+               LCB.BUILDING_NUMBER,
+               LCB.SORT_NO AS B_NO,
+               LCU.ID AS UNIT_ID,
+               LCU.UNIT_NUMBER,
+               LCU.SORT_NO AS U_NO,
+               LCL.ID AS LAYER_ID,
+               LCL.LAYER_NUMBER,
+               LCL.SORT_NO AS L_NO,
+               LCH.ID AS HOSEHOLD_ID,
+               LCH.HOUSEHOLD_NUMBER,
+               LCH.SORT_NO AS H_NO,
+               LCHU.USER_ID
+        FROM l_community_period LCP
+                 LEFT JOIN l_community_building LCB ON LCP.ID = LCB.PERIOD_ID
+                 LEFT JOIN l_community_unit LCU ON LCB.ID = LCU.BUILDING_ID
+                 LEFT JOIN l_community_layer LCL ON LCU.ID = LCL.UNIT_ID
+                 LEFT JOIN l_community_household LCH ON LCL.ID = LCH.LAYER_ID
+                 LEFT JOIN l_community_household_user LCHU ON LCH.ID = LCHU.HOUSEHOLD_ID
+        WHERE LCHU.USER_ID = #{userId}
+        AND LCP.IS_DELETE = 0 and LCP.is_enable =  1
+        AND LCB.IS_DELETE = 0 and LCB.is_enable =  1
+        AND LCU.IS_DELETE = 0 and LCU.is_enable =  1
+        AND LCL.IS_DELETE = 0 and LCL.is_enable =  1
+        AND LCH.IS_DELETE = 0 and LCH.is_enable =  1
+        AND LCHU.IS_DELETE = 0 and LCHU.is_enable =  1
+    </select>
+
+
+</mapper>

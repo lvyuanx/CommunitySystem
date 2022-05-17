@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.community.mapper.CommunityHouseholdMapper">
+
+    <select id="findPeriodIByHouseholdId" resultType="java.lang.String">
+        select *
+        from l_community_household  lch
+        left join  l_community_layer lcl on lch.LAYER_ID = lcl.ID
+        left join l_community_unit lcu on lcl.UNIT_ID = lcu.ID
+        left join l_community_building lcb on lcu.BUILDING_ID = lcb.ID
+        left join  l_community_period lcp on lcb.PERIOD_ID = lcp.ID
+        where lch.IS_ENABLE = 1 and lch.IS_DELETE = 0
+        and lcl.IS_ENABLE = 1 and lcl.IS_DELETE = 0
+        and lcb.IS_ENABLE = 1 and lcb.IS_DELETE = 0
+        and lcp.IS_ENABLE = 1 and lcp.IS_DELETE = 0
+        and lch.ID = #{householdId}
+    </select>
+</mapper>

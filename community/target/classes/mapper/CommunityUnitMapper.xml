@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.community.mapper.CommunityUnitMapper">
+
+    <resultMap id="communityInfo" type="com.lvyx.community.vo.UnitVo">
+        <id column="UNIT_ID" property="id" />
+        <result column="UNIT_NUMBER" property="unitNumber"/>
+        <result column="BUILDING_ID" property="buildingId"/>
+        <result column="U_NO" property="sortNo"/>
+        <collection property="layerVoList" ofType="com.lvyx.community.vo.LayerVo">
+            <id column="LAYER_ID" property="id" />
+            <result column="LAYER_NUMBER" property="layerNumber"/>
+            <result column="UNIT_ID" property="unitId"/>
+            <result column="L_NO" property="sortNo"/>
+            <collection property="householdVoList" ofType="com.lvyx.community.vo.HouseholdVo">
+                <id column="HOUSEHOLD_ID" property="id" />
+                <result column="HOUSEHOLE_NUMBER" property="householdNumber"/>
+                <result column="LAYER_ID" property="layerId"/>
+                <result column="H_NO" property="sortNo"/>
+                <collection property="householdUserVoList" ofType="com.lvyx.community.vo.HouseholdUserVo">
+                    <id column="HOUSEHOLD_USER_ID" property="id" />
+                    <result column="HOUSEHOLD_ID" property="householdId"/>
+                    <result column="USER_ID" property="userId"/>
+                    <result column="USER_NO" property="sortNo"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findInfo" resultMap="communityInfo">
+        SELECT
+            LCU.ID AS UNIT_ID,
+               LCU.UNIT_NUMBER,
+               LCU.SORT_NO AS U_NO,
+               LCL.ID AS LAYER_ID,
+               LCL.LAYER_NUMBER,
+               LCL.SORT_NO AS L_NO,
+               LCH.ID AS HOSEHOLD_ID,
+               LCH.HOUSEHOLD_NUMBER,
+               LCH.SORT_NO AS H_NO,
+               LCHU.USER_ID,
+               LCHU.ID AS HOUSEHOLD_USER_ID,
+               LCHU.SORT_NO AS USER_NO
+        FROM  l_community_unit LCU
+                 LEFT JOIN l_community_layer LCL ON LCU.ID = LCL.UNIT_ID
+                 LEFT JOIN l_community_household LCH ON LCL.ID = LCH.LAYER_ID
+                 LEFT JOIN l_community_household_user LCHU ON LCH.ID = LCHU.HOUSEHOLD_ID
+        WHERE
+            (
+                  (LCU.IS_ENABLE = 1 OR LCU.IS_ENABLE IS NULL )AND (LCU.IS_DELETE = 0 OR LCU.IS_DELETE IS NULL )
+                AND (LCL.IS_ENABLE = 1 OR LCL.IS_ENABLE IS NULL )AND (LCL.IS_DELETE = 0 OR LCL.IS_DELETE IS NULL )
+                AND (LCH.IS_ENABLE = 1 OR LCH.IS_ENABLE IS NULL )AND (LCH.IS_DELETE = 0 OR LCH.IS_DELETE IS NULL )
+                AND( LCHU.IS_DELETE = 0 OR LCHU.IS_DELETE IS NULL )
+            )
+          AND LCU.BUILDING_ID = #{buildingId}
+    </select>
+
+    <select id="selectUnitIdUserCount" resultType="java.lang.Integer">
+        select count(0)
+        from l_community_unit lcu
+                 left join l_community_layer lcl on lcu.ID = lcl.UNIT_ID
+                 left join l_community_household lch on lcl.ID = lch.LAYER_ID
+                 inner join l_community_household_user lchu on lch.ID = lchu.HOUSEHOLD_ID
+        where  lcu.IS_DELETE = 0 and lcu.IS_ENABLE =1
+          and lcl.IS_DELETE = 0 and lcl.IS_ENABLE =1
+          and lch.IS_DELETE = 0 and lch.IS_ENABLE =1
+          and lchu.IS_DELETE = 0 and lchu.IS_ENABLE =1
+          and lcu.ID = #{unitId}
+    </select>
+</mapper>

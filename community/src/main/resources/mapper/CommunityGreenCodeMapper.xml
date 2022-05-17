@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.community.mapper.CommunityGreenCodeMapper">
+
+    <select id="selectCountByUintId" resultType="java.lang.Integer">
+        select count(0)
+        from l_community_unit lcu
+                 left join l_community_layer lcl on lcu.ID = lcl.UNIT_ID
+                 left join l_community_household lch on lcl.ID = lch.LAYER_ID
+                 left join l_community_household_user lchu on lch.ID = lchu.HOUSEHOLD_ID
+                 inner join l_community_green_code code on lchu.USER_ID = code.USER_ID
+        where  lcu.IS_DELETE = 0 and lcu.IS_ENABLE =1
+          and lcl.IS_DELETE = 0 and lcl.IS_ENABLE =1
+          and lch.IS_DELETE = 0 and lch.IS_ENABLE =1
+          and lchu.IS_DELETE = 0 and lchu.IS_ENABLE =1
+          and code.IS_DELETE = 0 and code.IS_ENABLE =1
+          and lcu.ID = #{unitId}
+    </select>
+</mapper>

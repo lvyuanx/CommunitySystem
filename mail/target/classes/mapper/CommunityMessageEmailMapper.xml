@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvyx.mail.mapper.CommunityMessageEmailMapper">
+
+    <select id="findByUserIds" resultType="com.lvyx.mail.vo.UserMessageVo">
+        select u.ID as userId, u.EMAIL, u.REAL_NAME
+        from l_user u
+        where u.id in
+        <foreach collection="userIds" close=")" separator="," open="(" item="userId">
+            #{userId}
+        </foreach>
+    </select>
+</mapper>
