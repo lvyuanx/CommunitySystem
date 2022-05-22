@@ -53,4 +53,9 @@ public class SystemProperties {
      * 系统重置默认密码
      **/
     private String systemPassword = "Lv@12345";
+
+    /**
+     * 是否开启验证码登录
+     **/
+    private Boolean isCaptcha = true;
 }

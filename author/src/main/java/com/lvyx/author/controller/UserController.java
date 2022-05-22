@@ -86,19 +86,21 @@ public class UserController {
             return new ErrorResult<>("用户名或者密码不能为");
         }
         // 校验验证码
-        if (! systemProperties.getActive().equals("test") || ! loginBo.getCaptcha().equals(systemProperties.getTestCaptchaCode())){
-            if (StringUtils.isNullOrEmpty(loginBo.getCaptcha())) {
-                return new ErrorResult<>("验证码不能为空");
-            }else {
-                String captchaKey = SystemCacheEnum.CAPTCHA.getValue() + loginBo.getCaptchaId() + CaptchaNameEnum.LOGIN_CAPTCHA.getValue();
-                Cache<Object, Object> cache = sysSimpleMapCacheService.getCache(captchaKey);
-                if (ObjectUtil.isNull(cache)) {
-                    return new ErrorResult<>("验证码已经过期");
-                }
-                String code = (String)cache.get(captchaKey);
-                String upperCaseCode = code.toUpperCase();
-                if (! upperCaseCode.equals(loginBo.getCaptcha().toUpperCase())) {
-                    return new ErrorResult<>("验证码错误");
+        if (systemProperties.getIsCaptcha()){
+            if (! systemProperties.getActive().equals("test") || ! loginBo.getCaptcha().equals(systemProperties.getTestCaptchaCode())){
+                if (StringUtils.isNullOrEmpty(loginBo.getCaptcha())) {
+                    return new ErrorResult<>("验证码不能为空");
+                }else {
+                    String captchaKey = SystemCacheEnum.CAPTCHA.getValue() + loginBo.getCaptchaId() + CaptchaNameEnum.LOGIN_CAPTCHA.getValue();
+                    Cache<Object, Object> cache = sysSimpleMapCacheService.getCache(captchaKey);
+                    if (ObjectUtil.isNull(cache)) {
+                        return new ErrorResult<>("验证码已经过期");
+                    }
+                    String code = (String)cache.get(captchaKey);
+                    String upperCaseCode = code.toUpperCase();
+                    if (! upperCaseCode.equals(loginBo.getCaptcha().toUpperCase())) {
+                        return new ErrorResult<>("验证码错误");
+                    }
                 }
             }
         }

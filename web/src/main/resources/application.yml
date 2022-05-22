@@ -109,7 +109,9 @@ lvyx:
       # 是否仅运行使用jwt方式登录
       is-only-jwt: true
     online: 3 # 支持最多三台设备登录
-  active: test
+  system:
+    isCaptcha: false # 是否使用验证码登录
+
 
 
 
