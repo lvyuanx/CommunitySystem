@@ -231,6 +231,22 @@
         AND LCH.IS_DELETE = 0 and LCH.is_enable =  1
         AND LCHU.IS_DELETE = 0 and LCHU.is_enable =  1
     </select>
+    <select id="checkUserHasAddress" resultType="java.lang.Integer">
+        SELECT LCHU.IS_ENABLE
+        FROM l_community_period LCP
+                 LEFT JOIN l_community_building LCB ON LCP.ID = LCB.PERIOD_ID
+                 LEFT JOIN l_community_unit LCU ON LCB.ID = LCU.BUILDING_ID
+                 LEFT JOIN l_community_layer LCL ON LCU.ID = LCL.UNIT_ID
+                 LEFT JOIN l_community_household LCH ON LCL.ID = LCH.LAYER_ID
+                 LEFT JOIN l_community_household_user LCHU ON LCH.ID = LCHU.HOUSEHOLD_ID
+        WHERE LCHU.USER_ID = #{userId}
+          AND LCP.IS_DELETE = 0 and LCP.is_enable =  1
+          AND LCB.IS_DELETE = 0 and LCB.is_enable =  1
+          AND LCU.IS_DELETE = 0 and LCU.is_enable =  1
+          AND LCL.IS_DELETE = 0 and LCL.is_enable =  1
+          AND LCH.IS_DELETE = 0 and LCH.is_enable =  1
+          AND LCHU.IS_DELETE = 0
+    </select>
 
 
 </mapper>

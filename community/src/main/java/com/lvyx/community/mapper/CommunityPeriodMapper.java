@@ -58,4 +58,13 @@ public interface CommunityPeriodMapper extends BaseMapper<CommunityPeriod> {
      **/
     AddressVo findInfoByUser(@Param("userId") String userId);
 
+    /**
+     * 查询登录用户是否含有住址信息
+     * @return 房间状态
+     * @author lvyx
+     * @since 2022/5/22 16:12
+     **/
+    Integer checkUserHasAddress(@Param("userId") String userId);
+
+
 }

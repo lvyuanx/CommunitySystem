@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lvyx.commons.enums.AddressStatusEnum;
 import com.lvyx.commons.enums.BooleanTypeEnum;
 import com.lvyx.commons.utils.BaseEntityUtil;
 import com.lvyx.commons.utils.ShiroUtils;
@@ -234,5 +235,21 @@ public class CommunityPeriodServiceImpl extends ServiceImpl<CommunityPeriodMappe
     @Override
     public AddressVo findInfoByUser() {
         return this.baseMapper.findInfoByUser(ShiroUtils.getUserId());
+    }
+
+    /**
+     * 查询登录用户是否含有住址信息
+     *
+     * @return java.lang.Integer
+     * @author lvyx
+     * @since 2022/5/22 16:12
+     **/
+    @Override
+    public Integer checkUserHasAddress() {
+        Integer isEable = this.baseMapper.checkUserHasAddress(ShiroUtils.getUserId());
+        if(ObjectUtils.isEmpty(isEable)){
+            return AddressStatusEnum.NO_CREATE.getCode();
+        }
+        return isEable;
     }
 }

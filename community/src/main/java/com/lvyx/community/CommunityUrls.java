@@ -29,6 +29,7 @@ public class CommunityUrls {
         public static final String FIND_COMMUNITY_INFO = "/findCommunityInfo";
         public static final String FIND_ALL_COMMUNITY_INFO = "/findAllCommunityInfo";
         public static final String FIND_INFO_BY_USER = "/findInfoByUser";
+        public static final String CHECK_USER_HAS_ADDRESS = "/checkUserHasAddress";
     }
 
     /**

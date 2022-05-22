@@ -73,4 +73,12 @@ public interface CommunityPeriodService extends IService<CommunityPeriod> {
      **/
     AddressVo findInfoByUser();
 
+    /**
+     * 查询登录用户是否含有住址信息
+     * @return java.lang.Integer
+     * @author lvyx
+     * @since 2022/5/22 16:12
+     **/
+    Integer checkUserHasAddress();
+
 }

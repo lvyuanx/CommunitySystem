@@ -142,4 +142,20 @@ public class CommunityPeriodController {
         return new SuccessResult<>("查询登录用户住址信息成功", infoByUser);
     }
 
+
+    @LLogger(description = "查询登录用户是否含有住址信息")
+    @ApiOperation("查询登录用户是否含有住址信息")
+    @ApiOperationSupport(order = 6)
+    @GetMapping(CommunityUrls.PeriodCtrls.CHECK_USER_HAS_ADDRESS)
+    public Result<Integer> checkUserHasAddress(){
+        Integer status = null;
+        try {
+            status = communityPeriodService.checkUserHasAddress();
+        } catch (Exception e){
+            log.error(e.getMessage(), e);
+            return new ErrorResult<>("查询登录用户是否含有住址信息异常");
+        }
+        return new SuccessResult<>("查询登录用户是否含有住址信息成功", status);
+    }
+
 }
