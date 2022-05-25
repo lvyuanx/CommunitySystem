@@ -171,7 +171,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         Map<String, List<Resource>> oldMap = resourceList.stream().collect(Collectors.groupingBy(Resource::getParentId));
         oldMap.forEach((k, v) -> {
             if (! newPeriodIds.contains(k)){
-                deleteResourceId.add(v.get(0).getIcon());
+                deleteResourceId.add(v.get(0).getId());
             }
         });
         addPeriodIds = newPeriodIds.stream().filter(periodId -> ObjectUtils.isEmpty(oldMap.get(periodId))).collect(Collectors.toList());
@@ -206,6 +206,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         communityRoleVoList = communityRoleVoList.stream().peek(communityRoleVo -> {
             List<CommunityResourceVo> communityResourceVoList = roleResourceService.findCommunityResourceByRoleId(communityRoleVo.getRoleId());
             communityRoleVo.setCommunityResourceVoList(communityResourceVoList);
+            List<String> periodNameArr = communityResourceVoList.stream().map(CommunityResourceVo::getPeriodName).collect(Collectors.toList());
+            communityRoleVo.setPeriodNameStr(org.apache.commons.lang.StringUtils.join(periodNameArr, ","));
         }).collect(Collectors.toList());
         communityRoleVoPageInfo.setList(communityRoleVoList);
         return communityRoleVoPageInfo;

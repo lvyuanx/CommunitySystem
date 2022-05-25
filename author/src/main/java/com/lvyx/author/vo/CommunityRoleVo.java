@@ -26,6 +26,9 @@ public class CommunityRoleVo implements Serializable {
     @ApiModelProperty("角色描述")
     private String description;
 
+    @ApiModelProperty("期名称（多个期名称间用，分割）")
+    private String periodNameStr;
+
     @ApiModelProperty("资源列表")
     private List<CommunityResourceVo> communityResourceVoList;
 
